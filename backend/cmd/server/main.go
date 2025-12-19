@@ -3,18 +3,18 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/nitin-787/resume-generator-backend/internal/handlers"
 )
 
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Go backend running"))
-}
 
 func main() {
-	http.HandleFunc("/health", healthHandler)
+	r := chi.NewRouter()
 
+	r.Get("/health", handlers.Health)
 	log.Println("Starting Go server on :8080")
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		log.Fatal(err)
 	}
