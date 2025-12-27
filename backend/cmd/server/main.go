@@ -11,6 +11,7 @@ func main() {
 
 	config.LoadConfig()
 	database.ConnectDatabase()
+	database.MigrateDatabase()
 
 	log.Println("NeonDB migration completed successfully")
 }

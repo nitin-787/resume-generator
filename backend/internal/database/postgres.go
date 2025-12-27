@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/nitin-787/resume-generator-backend/internal/config"
+	"github.com/nitin-787/resume-generator-backend/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -31,4 +32,19 @@ func ConnectDatabase() {
 
 	DB = db
 	log.Println(" Connected to NeonDB successfully")
+}
+
+func MigrateDatabase() {
+	err := DB.AutoMigrate(
+		&models.User{},
+		&models.ResumeTemplate{},
+		&models.Resume{},
+		&models.Category{},
+	)
+	if err != nil {
+		log.Fatal("Failed to migrate database:", err)
+	} else {
+		log.Println(" Database migration completed successfully")
+	}
+
 }
