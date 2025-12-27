@@ -1,10 +1,11 @@
-package handlers 
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"github.com/nitin-787/resume-generator-backend/internal/models"
+	"github.com/nitin-787/resume-generator-backend/internal/services"
 )
 
 func GenerateAI(w http.ResponseWriter, r *http.Request) {
@@ -14,19 +15,16 @@ func GenerateAI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req models.GenerateRequest
-
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
 	}
 
-	// Mock AI output
-	resp := models.GenerateResponse {
-		Bullets: []string{
-			"Built scalable frontend components using React",
-			"Collaborated with backend teams to integrate APIs",
-			"Improved application performance and UX",
-		},
+	bullets := services.GenerateResumeBullets(req.Role, req.Skills)
+
+	resp := models.GenerateResponse{
+		Bullets: bullets,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
