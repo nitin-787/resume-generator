@@ -12,8 +12,8 @@ type GenerateResponse struct {
 }
 
 type Resume struct {
-	ID         string          `gorm:"primaryKey" json:"id"`
-	UserID     string          `gorm:"index" json:"user_id"`
+	ID         uint            `gorm:"primaryKey" json:"id"`
+	UserID     uint            `gorm:"index" json:"user_id"`
 	TemplateID string          `gorm:"index" json:"template_id"`
 	Title      string          `json:"title"`
 	Content    string          `gorm:"type:text" json:"content"`

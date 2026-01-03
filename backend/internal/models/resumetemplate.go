@@ -3,7 +3,7 @@ package models
 import "time"
 
 type ResumeTemplate struct {
-	ID           string    `gorm:"primaryKey" json:"id"`
+	ID           uint      `gorm:"primaryKey" json:"id"`
 	Name         string    `json:"name"`
 	Description  string    `json:"description"`
 	ThumbnailURL string    `json:"thumbnail_url"`
