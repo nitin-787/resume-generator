@@ -24,6 +24,9 @@ func main() {
 	authService := services.NewAuthService(userRepo)
 	authHandler := handlers.NewAuthHandler(authService)
 
+	aiService := services.NewAIService()
+	aiHandler := handlers.NewAIHandler(aiService)
+
 	// 3. Initialize Gin
 	r := gin.Default()
 
@@ -51,7 +54,7 @@ func main() {
 		protected.Use(middleware.AuthMiddleware())
 		{
 			// Now AI generation is protected so we know WHICH user is using credits
-			protected.POST("/ai/generate", handlers.GenerateAI)
+			protected.POST("/ai/generate", aiHandler.GenerateAI)
 
 			// Future resume routes like:
 			// protected.POST("/resumes", resumeHandler.Create)

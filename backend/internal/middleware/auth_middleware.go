@@ -12,7 +12,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorizaton")
+		authHeader := c.GetHeader("Authorization")
 
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, dto.BaseResponse{
@@ -23,7 +23,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		parts := strings.Split(authHeader, "")
+		parts := strings.Split(authHeader, " ")
 
 		if len(parts) != 2 || parts[0] != "Bearer" {
 			c.JSON(http.StatusUnauthorized, dto.BaseResponse{

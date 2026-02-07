@@ -15,4 +15,3 @@ func main() {
 
 	log.Println("NeonDB migration completed successfully")
 }
-
