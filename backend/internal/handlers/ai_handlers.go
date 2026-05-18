@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nitin-787/resume-generator-backend/internal/models"
 	"github.com/nitin-787/resume-generator-backend/internal/services" // NOTE: service folder, not services
-)
+) 
 
 type AIHandler struct {
 	aiService services.AIService

@@ -17,9 +17,8 @@ type Config struct {
 var AppConfig Config
 
 func LoadConfig() {
-	err := godotenv.Load()
-
-	if err != nil {
+	
+	if err := godotenv.Load(); err != nil {
 		log.Println(".env not found, using system env vars")
 	}
 
