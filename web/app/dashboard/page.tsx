@@ -3,30 +3,54 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// Dashboard ke liye Type Interfaces
 interface Resume {
   id: string;
   title: string;
+  templateId: string;
   created_at: string;
 }
+
+// Static Templates List for Selection
+const AVAILABLE_TEMPLATES = [
+  {
+    id: "1",
+    name: "Classic Minimalist",
+    desc: "Clean black & white design for SDE roles.",
+    color: "bg-slate-900",
+  },
+  {
+    id: "2",
+    name: "Tech Pro Grid",
+    desc: "Two-column modern layout for backend engineers.",
+    color: "bg-indigo-950",
+  },
+];
 
 export default function Dashboard() {
   const router = useRouter();
   const [title, setTitle] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("1"); // Default Template '1'
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  // 1. Mock Database se Resumes Fetch karne ka logic (Abhi local state se test kr rhe)
   const fetchResumes = async () => {
     setFetchLoading(true);
     try {
-      // Future mein yahan `resumeService.getAllResumes()` call hoga
-      // Abhi mock data set kar rahe hain dashboard UI test karne ke liye
       const mockList: Resume[] = [
-        { id: "1", title: "Backend Engineer Resume", created_at: "2026-05-18" },
-        { id: "2", title: "Frontend Intern Resume", created_at: "2026-05-18" },
+        {
+          id: "1",
+          title: "Backend Engineer Resume",
+          templateId: "1",
+          created_at: "2026-05-18",
+        },
+        {
+          id: "2",
+          title: "Frontend Intern Resume",
+          templateId: "2",
+          created_at: "2026-05-18",
+        },
       ];
       setResumes(mockList);
     } catch (error) {
@@ -40,7 +64,6 @@ export default function Dashboard() {
     fetchResumes();
   }, []);
 
-  // 2. Naya Resume Create karne ka logic
   const handleCreateResume = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title) return alert("Title daalna zaroori hai bhai!");
@@ -49,17 +72,16 @@ export default function Dashboard() {
     setMessage("");
 
     try {
-      // Future mein yahan `resumeService.createResume` call hoga
-      // Abhi local test behavior check karne ke liye state update kar rhe
       const newResume: Resume = {
         id: (resumes.length + 1).toString(),
         title: title,
+        templateId: selectedTemplate, // Chosen template goes here
         created_at: new Date().toISOString().split("T")[0],
       };
 
       setResumes([...resumes, newResume]);
-      setMessage("Resume ban gaya successfully (Mock)!");
-      setTitle(""); // Form clear
+      setMessage(`Resume ban gaya! Template ID: ${selectedTemplate} use ki h.`);
+      setTitle("");
     } catch (error: any) {
       setMessage("Kuch phat gaya!");
     } finally {
@@ -70,12 +92,12 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6 md:p-12">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header Section */}
+        {/* Header */}
         <div className="border-b border-gray-800 pb-4 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
             <p className="text-gray-400 text-sm mt-1">
-              Apne saare resumes yahan manage karo.
+              Apne saare resumes aur templates yahan manage karo.
             </p>
           </div>
           <button
@@ -89,13 +111,17 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Workspace Layout Split */}
+        {/* Split Layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Left Panel: Create Form */}
-          <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg h-fit">
-            <h2 className="text-xl font-semibold mb-4">
-              Nanya Resume Banayein
-            </h2>
+          {/* Left Panel: Form with Template Selector */}
+          <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg h-fit space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">Nanya Resume</h2>
+              <p className="text-xs text-gray-500">
+                Title aur design choose karo.
+              </p>
+            </div>
+
             <form onSubmit={handleCreateResume} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">
@@ -105,23 +131,50 @@ export default function Dashboard() {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., SDE Intern Role"
+                  placeholder="e.g., Golang Backend Role"
                   className="w-full p-2.5 rounded bg-gray-800 border border-gray-700 text-white text-sm focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
 
+              {/* Template Radio Selector */}
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  Choose Layout Template
+                </label>
+                <div className="grid grid-cols-1 gap-2">
+                  {AVAILABLE_TEMPLATES.map((tmpl) => (
+                    <div
+                      key={tmpl.id}
+                      onClick={() => setSelectedTemplate(tmpl.id)}
+                      className={`p-3 rounded border text-left cursor-pointer transition ${
+                        selectedTemplate === tmpl.id
+                          ? "border-blue-500 bg-blue-950/20"
+                          : "border-gray-800 bg-gray-950/40 hover:border-gray-700"
+                      }`}
+                    >
+                      <p className="text-sm font-medium text-gray-200">
+                        {tmpl.name}
+                      </p>
+                      <p className="text-[11px] text-gray-500 mt-0.5">
+                        {tmpl.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium p-2.5 rounded transition disabled:bg-gray-800 disabled:text-gray-500"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium p-2.5 rounded transition disabled:bg-gray-800"
               >
-                {loading ? "Creating..." : "Create 🚀"}
+                {loading ? "Creating..." : "Create Resume 🚀"}
               </button>
             </form>
 
             {message && (
-              <p className="mt-4 text-xs text-center text-blue-400 bg-blue-950/30 p-2 rounded border border-blue-900/50">
+              <p className="text-xs text-center text-blue-400 bg-blue-950/30 p-2 rounded border border-blue-900/50">
                 {message}
               </p>
             )}
@@ -132,12 +185,10 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold">Aapke Resumes</h2>
 
             {fetchLoading ? (
-              <p className="text-sm text-gray-500 animate-pulse">
-                Loading your resumes...
-              </p>
+              <p className="text-sm text-gray-500 animate-pulse">Loading...</p>
             ) : resumes.length === 0 ? (
               <div className="border border-dashed border-gray-800 p-8 rounded-lg text-center text-gray-500 text-sm">
-                Koi resume nahi mila bhai. Pehla resume create karo!
+                Koi resume nahi mila bhai.
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -147,10 +198,15 @@ export default function Dashboard() {
                     className="bg-gray-900 border border-gray-800 p-4 rounded-lg hover:border-gray-700 transition flex flex-col justify-between"
                   >
                     <div>
-                      <h3 className="font-medium text-gray-200">
-                        {resume.title}
-                      </h3>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-medium text-gray-200">
+                          {resume.title}
+                        </h3>
+                        <span className="text-[10px] bg-gray-800 px-2 py-0.5 rounded text-gray-400 border border-gray-700">
+                          Template {resume.templateId}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
                         ID: {resume.id} | Date: {resume.created_at}
                       </p>
                     </div>
