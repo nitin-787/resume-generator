@@ -4,14 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
@@ -19,6 +21,7 @@ export default function LoginPage() {
     setTimeout(() => {
       localStorage.setItem("token", "mock_token");
       setLoading(false);
+
       router.push("/dashboard");
     }, 1000);
   };
@@ -52,8 +55,6 @@ export default function LoginPage() {
         border-r border-zinc-900
         px-8"
         >
-          {/* same width as right */}
-
           <div
             className="
           w-full
@@ -61,25 +62,23 @@ export default function LoginPage() {
           >
             {/* logo */}
 
-            <div>
-              <button
-                onClick={() => router.push("/")}
-                className="
-              text-3xl
-              font-bold"
-              >
-                CV
-                <span className="text-blue-500">CRAFT</span>
-              </button>
+            <button
+              onClick={() => router.push("/")}
+              className="
+            text-3xl
+            font-bold"
+            >
+              CV
+              <span className="text-blue-500">CRAFT</span>
+            </button>
 
-              <div
-                className="
-              text-sm
-              text-zinc-500
-              mt-2"
-              >
-                AI Resume Builder
-              </div>
+            <div
+              className="
+            text-sm
+            text-zinc-500
+            mt-2"
+            >
+              AI Resume Builder
             </div>
 
             {/* heading */}
@@ -89,10 +88,9 @@ export default function LoginPage() {
             mt-20
             text-5xl
             font-semibold
-            leading-tight
-            tracking-tight"
+            leading-tight"
             >
-              Build resumes recruiters actually read.
+              Start building resumes recruiters notice.
             </h1>
 
             <p
@@ -101,8 +99,8 @@ export default function LoginPage() {
             text-zinc-400
             leading-8"
             >
-              Create ATS optimized resumes, tailor them for roles and export
-              recruiter-ready PDFs.
+              Join thousands of students and developers creating ATS-friendly
+              resumes tailored for jobs.
             </p>
 
             {/* stats */}
@@ -138,7 +136,7 @@ export default function LoginPage() {
               ))}
             </div>
 
-            {/* ATS card */}
+            {/* activity card */}
 
             <div
               className="
@@ -158,7 +156,7 @@ export default function LoginPage() {
                   text-xs
                   text-zinc-500"
                   >
-                    Resume Score
+                    Average ATS Improvement
                   </div>
 
                   <div
@@ -167,12 +165,12 @@ export default function LoginPage() {
                   font-semibold
                   mt-2"
                   >
-                    94
+                    +31
                     <span
                       className="
                     text-zinc-500"
                     >
-                      /100
+                      %
                     </span>
                   </div>
                 </div>
@@ -182,7 +180,7 @@ export default function LoginPage() {
                 text-green-500
                 text-sm"
                 >
-                  +18%
+                  Growth
                 </div>
               </div>
 
@@ -190,14 +188,14 @@ export default function LoginPage() {
                 className="
               h-1.5
               rounded-full
-              overflow-hidden
               bg-zinc-900
+              overflow-hidden
               mt-6"
               >
                 <div
                   className="
                 h-full
-                w-[94%]
+                w-[80%]
                 bg-blue-500"
                 />
               </div>
@@ -209,9 +207,9 @@ export default function LoginPage() {
               text-xs
               text-zinc-500"
               >
-                <span>ATS Optimized</span>
+                <span>Better Keywords</span>
 
-                <span>Recruiter Ready</span>
+                <span>Higher Shortlists</span>
               </div>
             </div>
           </div>
@@ -236,7 +234,7 @@ export default function LoginPage() {
             text-5xl
             font-semibold"
             >
-              Welcome back
+              Create account
             </h1>
 
             <p
@@ -244,15 +242,29 @@ export default function LoginPage() {
             mt-4
             text-zinc-400"
             >
-              Sign in to access resumes, templates and ATS reports.
+              Start building AI optimized resumes in minutes.
             </p>
 
             <form
-              onSubmit={handleLogin}
+              onSubmit={handleRegister}
               className="
             mt-12
             space-y-5"
             >
+              <input
+                type="text"
+                placeholder="Full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="
+              w-full
+              px-5 py-4
+              rounded-xl
+              bg-transparent
+              border border-zinc-800"
+                required
+              />
+
               <input
                 type="email"
                 placeholder="Email"
@@ -281,26 +293,30 @@ export default function LoginPage() {
                 required
               />
 
+              {/* benefits */}
+
               <div
                 className="
-              flex justify-between
-              text-sm"
+              space-y-4
+              pt-2"
               >
-                <label
-                  className="
-                text-zinc-500"
-                >
-                  <input type="checkbox" />
+                {[
+                  "Free ATS scoring",
+                  "AI bullet generation",
+                  "50+ resume templates",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="
+                  flex gap-3
+                  text-sm
+                  text-zinc-500"
+                  >
+                    <CheckCircle2 size={16} />
 
-                  <span className="ml-2">Remember me</span>
-                </label>
-
-                <button
-                  className="
-                text-zinc-500"
-                >
-                  Forgot password
-                </button>
+                    {item}
+                  </div>
+                ))}
               </div>
 
               <button
@@ -312,37 +328,16 @@ export default function LoginPage() {
               bg-white
               text-black
               flex justify-center
-              items-center gap-2"
+              items-center gap-2
+              mt-6"
               >
-                {loading ? "Signing in..." : "Continue"}
+                {loading ? "Creating account..." : "Create account"}
 
                 {!loading && <ArrowRight size={18} />}
               </button>
             </form>
 
-            <div
-              className="
-            mt-12
-            space-y-4"
-            >
-              {[
-                "ATS optimization included",
-                "Secure cloud storage",
-                "50+ templates available",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="
-                flex gap-3
-                text-sm
-                text-zinc-500"
-                >
-                  <CheckCircle2 size={16} />
-
-                  {item}
-                </div>
-              ))}
-            </div>
+            {/* footer */}
 
             <div
               className="
@@ -352,14 +347,14 @@ export default function LoginPage() {
             text-sm
             text-zinc-500"
             >
-              New here?
+              Already registered?
               <button
-                onClick={() => router.push("/register")}
+                onClick={() => router.push("/login")}
                 className="
               ml-2
               text-white"
               >
-                Create account
+                Sign in
               </button>
             </div>
           </div>

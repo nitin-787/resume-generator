@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowRight, FileText, LogOut, Plus } from "lucide-react";
 
 interface Resume {
   id: string;
@@ -10,212 +11,461 @@ interface Resume {
   created_at: string;
 }
 
-// Static Templates List for Selection
-const AVAILABLE_TEMPLATES = [
+const TEMPLATES = [
   {
     id: "1",
-    name: "Classic Minimalist",
-    desc: "Clean black & white design for SDE roles.",
-    color: "bg-slate-900",
+    name: "ATS Minimal",
+    desc: "Clean layout for placements",
   },
+
   {
     id: "2",
-    name: "Tech Pro Grid",
-    desc: "Two-column modern layout for backend engineers.",
-    color: "bg-indigo-950",
+    name: "Developer Pro",
+    desc: "For SDE / backend roles",
   },
 ];
 
 export default function Dashboard() {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState("1"); // Default Template '1'
-  const [resumes, setResumes] = useState<Resume[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [fetchLoading, setFetchLoading] = useState(true);
-  const [message, setMessage] = useState("");
 
-  const fetchResumes = async () => {
-    setFetchLoading(true);
-    try {
-      const mockList: Resume[] = [
+  const [title, setTitle] = useState("");
+  const [selected, setSelected] = useState("1");
+
+  const [resumes, setResumes] = useState<Resume[]>([]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setResumes([
         {
           id: "1",
           title: "Backend Engineer Resume",
           templateId: "1",
-          created_at: "2026-05-18",
+          created_at: "2026",
         },
+
         {
           id: "2",
-          title: "Frontend Intern Resume",
+          title: "Frontend Resume",
           templateId: "2",
-          created_at: "2026-05-18",
+          created_at: "2026",
         },
-      ];
-      setResumes(mockList);
-    } catch (error) {
-      console.error("Fetch error:", error);
-    } finally {
-      setFetchLoading(false);
-    }
-  };
+      ]);
 
-  useEffect(() => {
-    fetchResumes();
+      setLoading(false);
+    }, 600);
   }, []);
 
-  const handleCreateResume = async (e: React.FormEvent) => {
+  function createResume(e: React.FormEvent) {
     e.preventDefault();
-    if (!title) return alert("Title daalna zaroori hai bhai!");
 
-    setLoading(true);
-    setMessage("");
+    const resume = {
+      id: String(resumes.length + 1),
 
-    try {
-      const newResume: Resume = {
-        id: (resumes.length + 1).toString(),
-        title: title,
-        templateId: selectedTemplate, // Chosen template goes here
-        created_at: new Date().toISOString().split("T")[0],
-      };
+      title,
 
-      setResumes([...resumes, newResume]);
-      setMessage(`Resume ban gaya! Template ID: ${selectedTemplate} use ki h.`);
-      setTitle("");
-    } catch (error: any) {
-      setMessage("Kuch phat gaya!");
-    } finally {
-      setLoading(false);
-    }
-  };
+      templateId: selected,
+
+      created_at: "2026",
+    };
+
+    setResumes([resume, ...resumes]);
+
+    setTitle("");
+  }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6 md:p-12">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="border-b border-gray-800 pb-4 flex justify-between items-center">
+    <div
+      className="
+min-h-screen
+bg-[#0a0a0a]
+text-white"
+    >
+      {/* grid */}
+
+      <div
+        className="
+fixed inset-0
+opacity-[0.03]
+bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)]
+bg-[size:42px_42px]"
+      />
+
+      <div
+        className="
+relative
+max-w-7xl
+mx-auto
+px-8
+py-10"
+      >
+        {/* HEADER */}
+
+        <div
+          className="
+flex justify-between
+items-center
+border-b border-zinc-900
+pb-8"
+        >
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-gray-400 text-sm mt-1">
-              Apne saare resumes aur templates yahan manage karo.
+            <h1
+              className="
+text-4xl
+font-semibold"
+            >
+              Dashboard
+            </h1>
+
+            <p
+              className="
+text-zinc-500
+mt-3"
+            >
+              Manage resumes and templates
             </p>
           </div>
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              router.push("/login");
-            }}
-            className="text-xs bg-gray-900 border border-gray-800 hover:bg-gray-800 px-3 py-1.5 rounded text-gray-400 transition"
-          >
-            Logout
-          </button>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push("/")}
+              className="
+px-4 py-2
+rounded-xl
+border border-zinc-800
+hover:bg-zinc-900
+hover:border-zinc-700
+transition-all
+duration-150
+active:scale-[0.97]"
+            >
+              Home
+            </button>
+
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+
+                router.push("/login");
+              }}
+              className="
+px-4 py-2
+rounded-xl
+border border-zinc-800
+hover:bg-zinc-900
+hover:border-zinc-700
+transition-all
+duration-150
+active:scale-[0.97]
+flex gap-2 items-center"
+            >
+              <LogOut size={16} />
+              Logout
+            </button>
+          </div>
         </div>
 
-        {/* Split Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Left Panel: Form with Template Selector */}
-          <div className="bg-gray-900 border border-gray-800 p-6 rounded-lg h-fit space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">Nanya Resume</h2>
-              <p className="text-xs text-gray-500">
-                Title aur design choose karo.
-              </p>
-            </div>
+        {/* stats */}
 
-            <form onSubmit={handleCreateResume} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">
-                  Resume Title
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., Golang Backend Role"
-                  className="w-full p-2.5 rounded bg-gray-800 border border-gray-700 text-white text-sm focus:outline-none focus:border-blue-500"
-                  required
-                />
+        <div
+          className="
+grid md:grid-cols-3
+gap-5 mt-10"
+        >
+          {[
+            ["12", "Resumes"],
+            ["94", "ATS Score"],
+            ["7", "Interviews"],
+          ].map((item) => (
+            <div
+              key={item[0]}
+              className="
+border border-zinc-900
+rounded-xl
+p-6
+bg-[#0d0d0d]
+hover:bg-[#111]
+hover:border-zinc-800
+transition-all"
+            >
+              <div
+                className="
+text-3xl
+font-semibold"
+              >
+                {item[0]}
               </div>
 
-              {/* Template Radio Selector */}
-              <div className="space-y-2">
-                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Choose Layout Template
-                </label>
-                <div className="grid grid-cols-1 gap-2">
-                  {AVAILABLE_TEMPLATES.map((tmpl) => (
+              <div
+                className="
+text-sm
+text-zinc-500
+mt-2"
+              >
+                {item[1]}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* BODY */}
+
+        <div
+          className="
+grid
+lg:grid-cols-[340px_1fr]
+gap-8
+mt-10"
+        >
+          {/* CREATE */}
+
+          <div
+            className="
+border border-zinc-900
+rounded-xl
+bg-[#0d0d0d]
+p-6 h-fit"
+          >
+            <h2
+              className="
+text-xl
+font-medium"
+            >
+              New Resume
+            </h2>
+
+            <p
+              className="
+text-sm
+text-zinc-500
+mt-2"
+            >
+              Create tailored resumes
+            </p>
+
+            <form
+              onSubmit={createResume}
+              className="
+mt-8
+space-y-5"
+            >
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Resume title"
+                className="
+w-full
+px-4 py-4
+rounded-xl
+bg-transparent
+border border-zinc-800
+transition-all
+focus:border-zinc-600
+focus:ring-1
+focus:ring-zinc-700
+outline-none"
+              />
+
+              <div
+                className="
+space-y-3"
+              >
+                {TEMPLATES.map((tmpl) => (
+                  <button
+                    type="button"
+                    key={tmpl.id}
+                    onClick={() => setSelected(tmpl.id)}
+                    className={`
+
+w-full
+text-left
+rounded-xl
+border
+p-4
+cursor-pointer
+transition-all
+duration-200
+active:scale-[0.98]
+
+${
+  selected === tmpl.id
+    ? `
+border-white
+bg-zinc-900
+shadow-[0_0_0_1px_rgba(255,255,255,.05)]
+`
+    : `
+border-zinc-800
+hover:border-zinc-700
+hover:bg-zinc-900/50
+`
+}
+
+`}
+                  >
+                    <div>{tmpl.name}</div>
+
                     <div
-                      key={tmpl.id}
-                      onClick={() => setSelectedTemplate(tmpl.id)}
-                      className={`p-3 rounded border text-left cursor-pointer transition ${
-                        selectedTemplate === tmpl.id
-                          ? "border-blue-500 bg-blue-950/20"
-                          : "border-gray-800 bg-gray-950/40 hover:border-gray-700"
-                      }`}
+                      className="
+text-sm
+text-zinc-500
+mt-1"
                     >
-                      <p className="text-sm font-medium text-gray-200">
-                        {tmpl.name}
-                      </p>
-                      <p className="text-[11px] text-gray-500 mt-0.5">
-                        {tmpl.desc}
-                      </p>
+                      {tmpl.desc}
                     </div>
-                  ))}
-                </div>
+                  </button>
+                ))}
               </div>
 
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium p-2.5 rounded transition disabled:bg-gray-800"
+                className="
+w-full
+py-4
+rounded-xl
+bg-white
+text-black
+font-medium
+flex justify-center
+gap-2
+
+transition-all
+duration-150
+
+hover:opacity-90
+hover:scale-[1.01]
+
+active:scale-[0.98]
+active:translate-y-[1px]
+"
               >
-                {loading ? "Creating..." : "Create Resume 🚀"}
+                <Plus size={18} />
+                Create Resume
               </button>
             </form>
-
-            {message && (
-              <p className="text-xs text-center text-blue-400 bg-blue-950/30 p-2 rounded border border-blue-900/50">
-                {message}
-              </p>
-            )}
           </div>
 
-          {/* Right Panel: Resumes Display Grid */}
-          <div className="md:col-span-2 space-y-4">
-            <h2 className="text-xl font-semibold">Aapke Resumes</h2>
+          {/* RESUMES */}
 
-            {fetchLoading ? (
-              <p className="text-sm text-gray-500 animate-pulse">Loading...</p>
-            ) : resumes.length === 0 ? (
-              <div className="border border-dashed border-gray-800 p-8 rounded-lg text-center text-gray-500 text-sm">
-                Koi resume nahi mila bhai.
+          <div>
+            <div
+              className="
+flex justify-between
+items-center"
+            >
+              <h2
+                className="
+text-2xl
+font-medium"
+              >
+                Your resumes
+              </h2>
+
+              <span
+                className="
+text-sm
+text-zinc-500"
+              >
+                {resumes.length}
+                total
+              </span>
+            </div>
+
+            {loading ? (
+              <div
+                className="
+mt-10
+text-zinc-500"
+              >
+                Loading...
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div
+                className="
+grid md:grid-cols-2
+gap-5 mt-8"
+              >
                 {resumes.map((resume) => (
                   <div
                     key={resume.id}
-                    className="bg-gray-900 border border-gray-800 p-4 rounded-lg hover:border-gray-700 transition flex flex-col justify-between"
+                    className="
+border border-zinc-900
+rounded-xl
+bg-[#0d0d0d]
+p-6
+
+hover:border-zinc-700
+hover:bg-[#111]
+
+hover:-translate-y-1
+
+transition-all
+duration-200"
                   >
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <h3 className="font-medium text-gray-200">
+                    <div
+                      className="
+flex justify-between"
+                    >
+                      <div>
+                        <h3
+                          className="
+font-medium"
+                        >
                           {resume.title}
                         </h3>
-                        <span className="text-[10px] bg-gray-800 px-2 py-0.5 rounded text-gray-400 border border-gray-700">
+
+                        <p
+                          className="
+text-sm
+text-zinc-500
+mt-2"
+                        >
                           Template {resume.templateId}
-                        </span>
+                        </p>
                       </div>
-                      <p className="text-xs text-gray-500 mt-2">
-                        ID: {resume.id} | Date: {resume.created_at}
-                      </p>
+
+                      <div
+                        className="
+text-xs
+text-zinc-500"
+                      >
+                        {resume.created_at}
+                      </div>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-gray-800 flex justify-end">
+
+                    <div
+                      className="
+mt-10
+flex justify-between
+items-center"
+                    >
+                      <div
+                        className="
+flex gap-2
+text-green-500
+text-sm
+items-center"
+                      >
+                        <FileText size={16} />
+                        ATS Ready
+                      </div>
+
                       <button
                         onClick={() => router.push(`/editor/${resume.id}`)}
-                        className="text-xs text-blue-500 font-medium hover:underline bg-transparent border-none cursor-pointer"
+                        className="
+flex gap-2
+items-center
+
+hover:text-zinc-300
+
+transition-all
+duration-150
+
+active:scale-[0.96]
+"
                       >
-                        Open Editor →
+                        Open
+                        <ArrowRight size={16} />
                       </button>
                     </div>
                   </div>
