@@ -477,7 +477,7 @@ export default function LandingPage() {
 
                 {x}
               </div>
-            ),
+            )
           )}
         </div>
       </section>
