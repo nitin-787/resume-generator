@@ -19,8 +19,8 @@ type resumeService struct {
 	repo repository.ResumeRepository
 }
 
-func NewResumeService(repo repository.ResumeRepository) ResumeService {
-	return &resumeService{repo: repo}
+func NewResumeService(r repository.ResumeRepository) ResumeService {
+	return &resumeService{repo: r}
 }
 
 

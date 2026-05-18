@@ -40,6 +40,7 @@ func MigrateDatabase() {
 		&models.ResumeTemplate{},
 		&models.Resume{},
 		&models.Category{},
+		&models.User{}, &models.Resume{},
 	)
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)

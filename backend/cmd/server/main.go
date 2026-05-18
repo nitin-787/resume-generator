@@ -8,7 +8,7 @@ import (
 	"github.com/nitin-787/resume-generator-backend/internal/config"
 	"github.com/nitin-787/resume-generator-backend/internal/database"
 	"github.com/nitin-787/resume-generator-backend/internal/handlers"
-	"github.com/nitin-787/resume-generator-backend/internal/middleware" // 1. Import your middleware
+	"github.com/nitin-787/resume-generator-backend/internal/middleware"
 	"github.com/nitin-787/resume-generator-backend/internal/repository"
 	"github.com/nitin-787/resume-generator-backend/internal/services"
 )
@@ -23,6 +23,10 @@ func main() {
 	userRepo := repository.NewUserRepository(database.DB)
 	authService := services.NewAuthService(userRepo)
 	authHandler := handlers.NewAuthHandler(authService)
+
+	resumeRepo := repository.NewResumeRepository(database.DB)
+	resumeService := services.NewResumeService(resumeRepo)
+	resumeHandler := handlers.NewResumeHandler(resumeService)
 
 	aiService := services.NewAIService()
 	aiHandler := handlers.NewAIHandler(aiService)
@@ -56,9 +60,8 @@ func main() {
 			// Now AI generation is protected so we know WHICH user is using credits
 			protected.POST("/ai/generate", aiHandler.GenerateAI)
 
-			// Future resume routes like:
-			// protected.POST("/resumes", resumeHandler.Create)
-			// protected.GET("/resumes", resumeHandler.GetAll)
+			protected.POST("/resumes", resumeHandler.CreateResume)
+			protected.GET("/resumes", resumeHandler.GetAllResumes)
 		}
 
 		// Health check stays public
