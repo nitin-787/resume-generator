@@ -127,7 +127,7 @@ min-h-screen
 bg-[#0a0a0a]
 text-white"
     >
-      <EditorNavbar />
+      <EditorNavbar resume={resume} resumeId={id} />
 
       <div
         className="
