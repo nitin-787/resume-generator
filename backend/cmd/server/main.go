@@ -61,7 +61,10 @@ func main() {
 			protected.POST("/ai/generate", aiHandler.GenerateAI)
 
 			protected.POST("/resumes", resumeHandler.CreateResume)
+			protected.GET("/resumes/:id", resumeHandler.GetResumeByID)
 			protected.GET("/resumes", resumeHandler.GetAllResumes)
+			protected.PUT("/resumes/:id",resumeHandler.UpdateResume)
+			protected.DELETE("/resumes/:id", resumeHandler.DeleteResume)
 		}
 
 		// Health check stays public

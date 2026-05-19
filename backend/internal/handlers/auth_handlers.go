@@ -39,14 +39,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	loginData, err := h.svc.Login(req)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, dto.BaseResponse{Success: false, Message: err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, dto.BaseResponse{
-		Success: true,
-		Message: "Login successful",
-		Data:    loginData,
-	})
+loginData, err := h.svc.Login(req)
+    if err != nil {
+        c.JSON(http.StatusUnauthorized, dto.BaseResponse{Success: false, Message: err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "success": true,
+        "message": "Login successful",
+        "token":   loginData.Token, 
+    })
 }
