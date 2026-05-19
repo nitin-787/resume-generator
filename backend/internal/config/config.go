@@ -12,6 +12,7 @@ type Config struct {
 	APPPORT      string
 	DATABASE_URL string
 	JWT_SECRET   string
+	GEMINI_API_KEY string
 }
 
 var AppConfig Config
@@ -27,6 +28,7 @@ func LoadConfig() {
 		APPPORT:      os.Getenv("APPPORT"),
 		DATABASE_URL: os.Getenv("DATABASE_URL"),
 		JWT_SECRET:   os.Getenv("JWT_SECRET"),
+		GEMINI_API_KEY: os.Getenv("GEMINI_API_KEY"),
 	}
 
 	if AppConfig.DATABASE_URL == "" {
