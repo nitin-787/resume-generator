@@ -30,49 +30,81 @@ export default function Dashboard() {
 
   const [title, setTitle] = useState("");
   const [selected, setSelected] = useState("1");
-
   const [resumes, setResumes] = useState<Resume[]>([]);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setResumes([
-        {
-          id: "1",
-          title: "Backend Engineer Resume",
-          templateId: "1",
-          created_at: "2026",
-        },
+    async function loadResumes() {
+      const token = localStorage.getItem("token");
 
-        {
-          id: "2",
-          title: "Frontend Resume",
-          templateId: "2",
-          created_at: "2026",
-        },
-      ]);
+      if (!token) {
+        router.push("/login");
+        return;
+      }
 
+      try {
+        const res = await fetch("http://localhost:8080/api/resumes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const response = await res.json();
+        if (!res.ok || !response.success) {
+          throw new Error("Failed");
+        }
+
+        setResumes(
+          response.data.map((r: any) => ({
+            id: String(r.id),
+            title: r.title,
+            templateId: r.template_id,
+            created_at: new Date(r.created_at).toLocaleDateString(),
+          }))
+        );
+      } catch (err) {
+        console.error(err);
+      }
       setLoading(false);
-    }, 600);
-  }, []);
+    }
+    loadResumes();
+  }, [router]);
 
-  function createResume(e: React.FormEvent) {
+  async function createResume(e: React.FormEvent) {
     e.preventDefault();
+    const token = localStorage.getItem("token");
 
-    const resume = {
-      id: String(resumes.length + 1),
+    try {
+      const res = await fetch("http://localhost:8080/api/resumes", {
+        method: "POST",
 
-      title,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
 
-      templateId: selected,
+        body: JSON.stringify({
+          title,
+          template_id: selected,
+          content: JSON.stringify({
+            name: "",
+            skills: [],
+          }),
+        }),
+      });
 
-      created_at: "2026",
-    };
+      const response = await res.json();
 
-    setResumes([resume, ...resumes]);
+      if (!res.ok || !response.success) {
+        throw new Error(response.message);
+      }
 
-    setTitle("");
+      /* refresh */
+
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (

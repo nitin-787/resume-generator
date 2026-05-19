@@ -13,17 +13,48 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
 
-    setTimeout(() => {
-      localStorage.setItem("token", "mock_token");
-      setLoading(false);
+    try {
+      const res = await fetch(
+        "http://localhost:8080/api/auth/register",
 
-      router.push("/dashboard");
-    }, 1000);
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+          }),
+        }
+      );
+
+      const response = await res.json();
+
+      if (!res.ok || !response.success) {
+        throw new Error(response.message || "Registration failed");
+      }
+
+      alert(response.message);
+
+      /* Account created successfully */
+
+      router.push("/login");
+    } catch (err: any) {
+      alert(err.message);
+
+      console.error(err);
+    }
+
+    setLoading(false);
   };
 
   return (

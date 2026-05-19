@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import ResumeForm from "@/components/editor/ResumeForm";
@@ -10,55 +11,97 @@ import EditorStats from "@/components/editor/EditorStats";
 import { mockResume } from "@/data/mockResume";
 
 export default function Page() {
+  const { id } = useParams();
+
+  const router = useRouter();
+
   const [resume, setResume] = useState(mockResume);
 
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("resume");
+    async function loadResume() {
+      const token = localStorage.getItem("token");
 
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      if (!token) {
+        router.push("/login");
+        return;
+      }
 
-        /* merge with defaults */
-
-        setResume({
-          ...mockResume,
-
-          ...parsed,
-
-          contact: {
-            ...mockResume.contact,
-
-            ...parsed.contact,
-          },
-
-          skills: {
-            ...mockResume.skills,
-
-            ...parsed.skills,
+      try {
+        const res = await fetch("http://localhost:8080/api/resumes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
         });
-      }
-    } catch {
-      localStorage.removeItem("resume");
 
-      setResume(mockResume);
+        const response = await res.json();
+
+        if (!res.ok || !response.success) {
+          throw new Error("Failed to load resume");
+        }
+
+        const current = response.data.find(
+          (r: any) => String(r.id) === String(id)
+        );
+
+        if (current) {
+          const content = JSON.parse(current.content);
+
+          /*
+          Backend currently stores:
+          {
+            name:"Nitin",
+            skills:["Go","C++"]
+          }
+
+          Frontend expects:
+          contact:{}
+          skills:{}
+          projects:[]
+          education:[]
+          */
+
+          setResume({
+            ...mockResume,
+
+            contact: {
+              ...mockResume.contact,
+
+              name: content.name || mockResume.contact.name,
+            },
+
+            skills: {
+              ...mockResume.skills,
+
+              languages: Array.isArray(content.skills)
+                ? content.skills.join(", ")
+                : mockResume.skills.languages,
+            },
+
+            /*
+            keep mock data until backend
+            stores full structure
+            */
+
+            projects: mockResume.projects,
+
+            education: mockResume.education,
+
+            experience: mockResume.experience,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+
+        setResume(mockResume);
+      }
+
+      setLoaded(true);
     }
 
-    setLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (!loaded) return;
-
-    localStorage.setItem(
-      "resume",
-
-      JSON.stringify(resume)
-    );
-  }, [resume, loaded]);
+    loadResume();
+  }, [id, router]);
 
   if (!loaded) {
     return (
@@ -90,6 +133,7 @@ text-white"
         className="
 max-w-[1850px]
 mx-auto
+
 px-8
 py-8"
       >
@@ -98,6 +142,7 @@ py-8"
         <div
           className="
 grid
+
 grid-cols-[820px_820px]
 
 gap-12

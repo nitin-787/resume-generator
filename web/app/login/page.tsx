@@ -11,16 +11,35 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
 
-    setTimeout(() => {
-      localStorage.setItem("token", "mock_token");
-      setLoading(false);
+    try {
+      const res = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const response = await res.json();
+
+      if (!res.ok || !response.success) {
+        throw new Error(response.message || "Login failed");
+      }
+
+      /* save auth */
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/dashboard");
-    }, 1000);
+    } catch (err: any) {
+      alert(err.message || "Login failed");
+      console.error(err);
+    }
+
+    setLoading(false);
   };
 
   return (

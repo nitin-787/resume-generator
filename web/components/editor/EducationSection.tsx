@@ -18,7 +18,6 @@ export default function EducationSection({ resume, setResume }: any) {
   function removeEducation(index: number) {
     setResume({
       ...resume,
-
       education: resume.education.filter((_: any, i: number) => i !== index),
     });
   }
@@ -126,7 +125,7 @@ space-y-4
 mt-4"
             >
               <input
-                value={"edu.college"}
+                value={edu.college}
                 onChange={(e) =>
                   update(
                     index,
@@ -143,7 +142,7 @@ input"
               />
 
               <input
-                value={"edu.degree"}
+                value={edu.degree}
                 onChange={(e) =>
                   update(
                     index,
@@ -160,7 +159,7 @@ input"
               />
 
               <input
-                value={"edu.date"}
+                value={edu.date}
                 onChange={(e) =>
                   update(
                     index,
