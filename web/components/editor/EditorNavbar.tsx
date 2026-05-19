@@ -41,17 +41,49 @@ export default function EditorNavbar({ resume, resumeId }: any) {
   }
 
   async function exportPDF() {
-    const element = document.getElementById("resume-preview");
-    if (!element) return;
+    const original = document.getElementById("resume-preview");
+    if (!original) return;
 
-    const html2pdf = (await import("html2pdf.js")).default;
+    const clone = original.cloneNode(true) as HTMLElement;
+    clone.style.background = "#fff";
+    clone.style.color = "#000";
+    clone.style.position = "fixed";
+    clone.style.left = "-99999px";
+    clone.style.top = "0";
 
-    await html2pdf()
-      .set({
-        filename: "resume.pdf",
-      })
-      .from(element)
-      .save();
+    /* REMOVE TAILWIND COLORS */
+    clone.querySelectorAll("*").forEach((el: any) => {
+      el.style.color = "#000";
+      el.style.backgroundColor = "transparent";
+      el.style.borderColor = "#ccc";
+      el.style.boxShadow = "none";
+    });
+
+    document.body.appendChild(clone);
+
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(clone, {
+        backgroundColor: "#fff",
+        scale: 2,
+        useCORS: true,
+      });
+
+      const jsPDF = (await import("jspdf")).default;
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const img = canvas.toDataURL("image/png");
+      const pdfWidth = 210;
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("resume.pdf");
+
+      document.body.removeChild(clone);
+    } catch (err) {
+      console.error(err);
+      alert("PDF failed");
+    }
   }
 
   return (
