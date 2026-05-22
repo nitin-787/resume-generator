@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, FileText, LogOut, Plus } from "lucide-react";
+import {
+  ArrowRight,
+  Cloud,
+  Contact,
+  FileText,
+  Languages,
+  LogOut,
+  Plus,
+} from "lucide-react";
 
 interface Resume {
   id: string;
@@ -84,19 +92,17 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title,
+          title: title || "Untitled Resume",
           template_id: selected,
-          content: JSON.stringify({
-            name: "",
-            skills: [],
-          }),
+          content: "",
         }),
       });
 
       const response = await res.json();
 
       if (!res.ok || !response.success) {
-        throw new Error();
+        console.log("Response:", response);
+        throw new Error(response.error || "Failed to create resume");
       }
 
       window.location.reload();

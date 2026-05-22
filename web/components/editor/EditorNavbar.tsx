@@ -10,21 +10,18 @@ export default function EditorNavbar({ resume, resumeId }: any) {
     try {
       const token = localStorage.getItem("token");
 
+      const payload = {
+        title: resume.contact?.name || "Resume",
+        content: JSON.stringify(resume) || {},
+      };
+
       const res = await fetch(`http://localhost:8080/api/resumes/${resumeId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: resume.contact.name || "My Resume",
-          content: JSON.stringify({
-            name: resume.contact.name,
-            skills: resume.skills.languages
-              .split(",")
-              .map((s: string) => s.trim()),
-          }),
-        }),
+        body: JSON.stringify(payload),
       });
 
       const response = await res.json();
@@ -77,7 +74,7 @@ export default function EditorNavbar({ resume, resumeId }: any) {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
       pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("resume.pdf");
+      pdf.save(`${resume.contact?.name?.replaceAll(" ", "_") || "resume"}.pdf`);
 
       document.body.removeChild(clone);
     } catch (err) {
@@ -88,7 +85,7 @@ export default function EditorNavbar({ resume, resumeId }: any) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-900 bg-[#0a0a0a]/80 backdrop-blur-sm">
-      <div className="flex h-[72px] items-center justify-between px-8">
+      <div className="flex h-18 items-center justify-between px-8">
         <div className="flex items-center gap-5">
           <button
             onClick={() => router.push("/dashboard")}

@@ -17,10 +17,10 @@ export default function SkillsSection({ resume, setResume }: any) {
       const token = localStorage.getItem("token");
 
       const skills = [
-        resume.skills.languages,
-        resume.skills.frameworks,
-        resume.skills.cloud,
-        resume.skills.tools,
+        resume.skills?.languages || "",
+        resume.skills?.frameworks || "",
+        resume.skills?.cloud || "",
+        resume.skills?.tools || "",
       ]
         .filter(Boolean)
         .join(",");

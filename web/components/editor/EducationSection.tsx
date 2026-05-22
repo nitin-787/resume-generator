@@ -125,7 +125,7 @@ space-y-4
 mt-4"
             >
               <input
-                value={edu.college}
+                value={edu.college || ""}
                 onChange={(e) =>
                   update(
                     index,
@@ -142,7 +142,7 @@ input"
               />
 
               <input
-                value={edu.degree}
+                value={edu.degree || ""}
                 onChange={(e) =>
                   update(
                     index,
@@ -159,7 +159,7 @@ input"
               />
 
               <input
-                value={edu.date}
+                value={edu.date || ""}
                 onChange={(e) =>
                   update(
                     index,

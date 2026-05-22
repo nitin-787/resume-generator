@@ -130,7 +130,7 @@ text-xs"
 space-y-4"
             >
               <input
-                value={exp.company}
+                value={exp.company || ""}
                 onChange={(e) =>
                   updateField(
                     index,
@@ -147,7 +147,7 @@ input"
               />
 
               <input
-                value={exp.role}
+                value={exp.role || ""}
                 onChange={(e) =>
                   updateField(
                     index,
@@ -164,7 +164,7 @@ input"
               />
 
               <input
-                value={exp.date}
+                value={exp.date || ""}
                 onChange={(e) =>
                   updateField(
                     index,

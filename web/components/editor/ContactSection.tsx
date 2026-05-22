@@ -24,7 +24,7 @@ grid-cols-2
 gap-4"
       >
         <input
-          value={resume.contact.name}
+          value={resume.contact.name || ""}
           onChange={(e) =>
             setResume({
               ...resume,
@@ -43,7 +43,7 @@ input"
         />
 
         <input
-          value={resume.contact.email}
+          value={resume.contact.email || ""}
           onChange={(e) =>
             setResume({
               ...resume,

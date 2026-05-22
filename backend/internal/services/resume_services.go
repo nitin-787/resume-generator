@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/nitin-787/resume-generator-backend/internal/models"
@@ -28,6 +29,26 @@ func (s *resumeService) CreateResume(userID uint, title string, templateID strin
 	if title == "" {
 		return nil, errors.New("resume title cannot be empty")
 	}
+
+	if content == "" {
+		defaultContent := models.ResumeContent {
+			Contact: models.Contact{},
+			Skills: models.Skills{},
+			Experience: []models.Experience{{}},
+			Projects: []models.Project{{}},
+			Education: []models.Education{},		
+		}
+
+		jsonData, err := json.Marshal(defaultContent)
+
+		if err != nil {
+			return nil, err
+		}
+
+		content = string(jsonData)
+	}
+
+
 
 	resume := &models.Resume{
 		UserID:     userID,
