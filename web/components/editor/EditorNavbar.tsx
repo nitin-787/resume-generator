@@ -3,7 +3,7 @@
 import { ArrowLeft, Download, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function EditorNavbar({ resume, resumeId }: any) {
+export default function EditorNavbar({ resume, resumeId, saving }: any) {
   const router = useRouter();
 
   async function saveResume() {
@@ -102,7 +102,7 @@ export default function EditorNavbar({ resume, resumeId }: any) {
             className="flex items-center gap-2 rounded-lg border border-zinc-800 px-4 py-2 text-sm font-medium hover:bg-zinc-900"
           >
             <Save size={16} />
-            Save
+            {saving ? "Saving..." : "Save"}
           </button>
 
           <button

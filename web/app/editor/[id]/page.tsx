@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import ResumeForm from "@/components/editor/ResumeForm";
@@ -13,6 +13,7 @@ export default function Page() {
   const router = useRouter();
   const [resume, setResume] = useState(mockResume);
   const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     async function loadResume() {
@@ -67,6 +68,37 @@ export default function Page() {
     loadResume();
   }, [id, router]);
 
+  useEffect(() => {
+    if (!loaded || !resume) {
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setSaving(true);
+
+        const token = localStorage.getItem("token");
+        await fetch(`http://localhost:8080/api/resumes/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: resume.contact?.name || "Resume",
+            content: JSON.stringify(resume),
+          }),
+        });
+
+        setSaving(false);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [resume, id, loaded]);
+
   if (!loaded) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] text-white flex justify-center items-center font-medium">
@@ -77,7 +109,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-blue-600">
-      <EditorNavbar resume={resume} resumeId={id} />
+      <EditorNavbar resume={resume} resumeId={id} saving={saving} />
 
       <div className="max-w-[1850px] mx-auto px-8 py-8">
         {/* <EditorStats resume={resume} /> */}
