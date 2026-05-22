@@ -2,16 +2,20 @@ import { ResumeData } from "@/types/resume";
 
 export const mockResume: ResumeData = {
   contact: {
-    name: "Nitin Sharma",
+    name: "User Name",
 
-    phone: "+91",
+    phone: "+91 1234567890",
 
     email: "nitin@gmail.com",
 
-    github: "github.com/nitin",
+    github: "github.com/nitin-787",
 
-    linkedin: "linkedin.com",
+    linkedin: "linkedin.com/username",
   },
+
+  summary:
+    "Full Stack Developer skilled in Go, React, Next.js and cloud technologies with\
+    experience building scalable web applications.",
 
   experience: [
     {

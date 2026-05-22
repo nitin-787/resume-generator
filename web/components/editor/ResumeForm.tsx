@@ -4,6 +4,7 @@ import ExperienceSection from "./ExperienceSection";
 import ProjectsSection from "./ProjectSection";
 import EducationSection from "./EducationSection";
 import TemplateSwitcher from "./TemplateSwitcher";
+import SummarySection from "./SummarySection";
 
 export default function ResumeForm({ resume, setResume }: any) {
   /* stop all undefined crashes */
@@ -29,6 +30,7 @@ space-y-6"
 
       <ContactSection resume={resume} setResume={setResume} />
 
+      <SummarySection resume={resume} setResume={setResume} />
       <SkillSection resume={resume} setResume={setResume} />
 
       <ExperienceSection resume={resume} setResume={setResume} />

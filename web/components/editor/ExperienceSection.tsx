@@ -16,6 +16,7 @@ export default function ExperienceSection({ resume, setResume }: any) {
           company: "",
           role: "",
           date: "",
+          description: "",
         },
       ],
     });
@@ -176,6 +177,23 @@ input"
                 }
                 placeholder="
 Date"
+                className="
+input"
+              />
+
+              <textarea
+                value={exp.description || ""}
+                onChange={(e) =>
+                  updateField(
+                    index,
+
+                    "description",
+
+                    e.target.value
+                  )
+                }
+                placeholder="
+Description"
                 className="
 input"
               />

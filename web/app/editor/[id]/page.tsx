@@ -53,6 +53,8 @@ export default function Page() {
               ...mockResume.contact,
               ...content.contact,
             },
+
+            summary: content.summary || "",
           });
         }
       } catch (err) {

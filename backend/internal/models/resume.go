@@ -49,6 +49,7 @@ type Education struct {
 type ResumeContent struct {
 
 	Contact Contact `json:"contact"`
+	Summary string `json:"summary"`
 	Skills Skills `json:"skills"`
 	Experience []Experience `json:"experience"`
 	Projects []Project `json:"projects"`

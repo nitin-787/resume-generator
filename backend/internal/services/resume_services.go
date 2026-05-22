@@ -33,6 +33,7 @@ func (s *resumeService) CreateResume(userID uint, title string, templateID strin
 	if content == "" {
 		defaultContent := models.ResumeContent {
 			Contact: models.Contact{},
+			Summary: "",
 			Skills: models.Skills{},
 			Experience: []models.Experience{{}},
 			Projects: []models.Project{{}},

@@ -14,6 +14,7 @@ export default function ProjectsSection({ resume, setResume }: any) {
           title: "",
           stack: "",
           date: "",
+          description: "",
         },
       ],
     });
@@ -167,6 +168,23 @@ input"
                 }
                 placeholder="
 Date"
+                className="
+input"
+              />
+
+              <textarea
+                value={project.description}
+                onChange={(e) =>
+                  update(
+                    index,
+
+                    "description",
+
+                    e.target.value
+                  )
+                }
+                placeholder="
+Description"
                 className="
 input"
               />

@@ -21,6 +21,12 @@ export default function ResumePreview({ resume }: any) {
           <span>{resume.contact?.linkedin}</span>
         </div>
 
+        {/* ================= SUMMARY ================= */}
+        <section className="mt-8">
+          <h2 className="font-bold uppercase border-b pb-1">Summary</h2>
+          <p className="mt-4 text-sm text-zinc-500">{resume.summary || ""}</p>
+        </section>
+
         {/* ================= EXPERIENCE ================= */}
         <section className="mt-10">
           <h2 className="font-bold uppercase border-b pb-1">Experience</h2>
@@ -33,6 +39,16 @@ export default function ResumePreview({ resume }: any) {
                   <span>{exp.date}</span>
                 </div>
                 <div className="mt-1 text-sm italic">{exp.role}</div>
+                <ul>
+                  <p className="mt-2 text-sm">
+                    {exp.description
+                      ?.split("\n")
+                      .filter(Boolean)
+                      .map((line: string, i: number) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                  </p>
+                </ul>
               </div>
             ))}
           </div>
@@ -45,11 +61,22 @@ export default function ResumePreview({ resume }: any) {
           <div className="mt-5 space-y-6">
             {resume.projects?.map((project: any, i: number) => (
               <div key={i}>
-                <div className="flex justify-between">
+                <div className="flex justify-between item-start">
                   <strong>{project.title}</strong>
                   <span>{project.date}</span>
                 </div>
                 <div className="mt-1 text-sm italic">{project.stack}</div>
+                <ul>
+                  <p className="mt-2 text-sm">
+                    {project.description
+
+                      ?.split("\n")
+                      .filter(Boolean)
+                      .map((line: string, i: number) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                  </p>
+                </ul>
               </div>
             ))}
           </div>
@@ -93,11 +120,6 @@ export default function ResumePreview({ resume }: any) {
             ))}
           </div>
         </section>
-
-        {/* ================= FOOTER ================= */}
-        <div className="mt-14 border-t pt-5 text-center text-xs text-zinc-500">
-          Generated using CV_CRAFT
-        </div>
       </div>
     </div>
   );

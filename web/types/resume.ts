@@ -7,6 +7,8 @@ export interface ResumeData {
     linkedin: string;
   };
 
+  summary: string;
+
   experience: {
     company: string;
     role: string;
